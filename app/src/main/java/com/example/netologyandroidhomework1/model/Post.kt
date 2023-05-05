@@ -1,4 +1,4 @@
-package com.example.netologyandroidhomework1
+package com.example.netologyandroidhomework1.model
 
 data class Post(
     private var countLiked: Int = 0,
@@ -11,20 +11,23 @@ data class Post(
         convertCountLikedToString()
         convertCountSharedToString()
     }
-    fun like() {
+    fun like():Boolean{
         if (!isLiked) {
             countLiked++
             convertCountLikedToString()
             isLiked = true
+            return true
         }
-        convertCountLikedToString()
+        return false
     }
-    fun dislike() {
+    fun dislike():Boolean{
         if (isLiked) {
             countLiked--
             convertCountLikedToString()
             isLiked = false
+            return true
         }
+        return false
     }
 
     fun share() {
