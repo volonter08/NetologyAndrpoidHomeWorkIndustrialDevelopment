@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
                 countLiked.text = post.textCountLiked
                 countShared.text = post.textCountShared
                 like.setImageResource(if(post.isLiked) (R.drawable.baseline_favorite_24) else
-                 (R.drawable.baseline_favorite_border_24))
+                    (R.drawable.baseline_favorite_border_24))
 
             }
         }

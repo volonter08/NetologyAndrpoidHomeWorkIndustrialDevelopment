@@ -4,21 +4,23 @@ plugins {
 }
 
 android {
-    namespace 'com.example.netologyandroidhomework1'
+    namespace "com.example.netologyandroidhomework1"
     compileSdk 33
 
     defaultConfig {
-        applicationId "ru.netology.nmedia"
+        applicationId "com.example.netologyandroidhomework1"
         minSdk 23
         targetSdk 33
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildFeatures {
         viewBinding true
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -35,7 +37,7 @@ android {
 }
 
 dependencies {
-    def core_version = "1.10.0"
+    def core_version = "1.10.1"
     def appcompat_version = "1.6.1"
     def mdc_version = "1.9.0"
     def constraintlayout_version = "2.1.4"
@@ -45,14 +47,6 @@ dependencies {
     def espresso_core_version = "3.5.1"
     def activity_version = "1.7.1"
     def lifecycle_version = "2.6.1"
-    constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
-            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
-        }
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
-            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
-        }
-    }
 
     implementation "androidx.core:core-ktx:$core_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
@@ -62,7 +56,6 @@ dependencies {
     implementation "androidx.activity:activity-ktx:$activity_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-
     testImplementation "junit:junit:$junit_version"
     androidTestImplementation "androidx.test.ext:junit:$ext_junit_version"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_core_version"
