@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
+import com.example.netologyandroidhomework1.model.ConverterCountFromIntToString
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
 
@@ -18,8 +19,8 @@ class MainActivity : AppCompatActivity() {
         viewBinding.countShared.text = viewModel.getCountShared()
         viewModel.data.observe(this){ post->
             viewBinding.apply {
-                countLiked.text = post.textCountLiked
-                countShared.text = post.textCountShared
+                countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)
+                countShared.text = ConverterCountFromIntToString.convertCount(post.countShared)
                 like.setImageResource(if(post.isLiked) (R.drawable.baseline_favorite_24) else
                     (R.drawable.baseline_favorite_border_24))
 

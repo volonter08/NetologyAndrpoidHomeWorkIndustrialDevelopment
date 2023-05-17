@@ -1,6 +1,7 @@
 package com.example.netologyandroidhomework1.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.example.netologyandroidhomework1.model.ConverterCountFromIntToString
 import com.example.netologyandroidhomework1.model.PostRepository
 
 class PostViewModel: ViewModel() {
@@ -8,18 +9,18 @@ class PostViewModel: ViewModel() {
     val data = repository.get()
 
     fun likeOrDislike(){
-        if(!repository.post.like())
-            repository.post.dislike()
+        if(!repository.like())
+            repository.dislike()
         repository.notifyData()
     }
     fun share(){
-        repository.post.share()
+        repository.share()
         repository.notifyData()
     }
     fun getCountLiked():String{
-        return repository.post.textCountLiked
+        return ConverterCountFromIntToString.convertCount(repository.post.countLiked)
     }
     fun getCountShared():String{
-        return repository.post.textCountShared
+        return ConverterCountFromIntToString.convertCount(repository.post.countShared)
     }
 }
