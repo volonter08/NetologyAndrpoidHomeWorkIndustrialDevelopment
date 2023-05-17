@@ -9,11 +9,30 @@ class PostRepository:Repository {
         countShared = 888,
     )
     val data: MutableLiveData<Post> = MutableLiveData()
-
     override fun get(): LiveData<Post> {
         return data
     }
     fun notifyData(){
         data.value= post
+    }
+    fun like():Boolean{
+        if (!post.isLiked) {
+            post.countLiked++
+            post.isLiked = true
+            return true
+        }
+        return false
+    }
+    fun dislike():Boolean{
+        if (post.isLiked) {
+            post.countLiked--
+            post.isLiked = false
+            return true
+        }
+        return false
+    }
+
+    fun share() {
+        post.countShared++
     }
 }
