@@ -3,10 +3,8 @@ package com.example.netologyandroidhomework1
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModel
 import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
-import com.example.netologyandroidhomework1.model.ConverterCountFromIntToString
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -17,6 +15,9 @@ class MainActivity : AppCompatActivity() {
         val viewModel:PostViewModel by viewModels()
         viewModel.data.observe(this){ post->
             viewBinding.apply {
+                author.text= post.author
+                date.text = post.published
+                content.text= post.content
                 countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)
                 countShared.text = ConverterCountFromIntToString.convertCount(post.countShared)
                 like.setImageResource(if(post.isLiked) (R.drawable.baseline_favorite_24) else
