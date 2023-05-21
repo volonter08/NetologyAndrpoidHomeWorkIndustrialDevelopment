@@ -15,8 +15,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
         val viewModel:PostViewModel by viewModels()
-        viewBinding.countLiked.text = viewModel.getCountLiked()
-        viewBinding.countShared.text = viewModel.getCountShared()
         viewModel.data.observe(this){ post->
             viewBinding.apply {
                 countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)

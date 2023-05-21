@@ -17,10 +17,4 @@ class PostViewModel: ViewModel() {
         repository.share()
         repository.notifyData()
     }
-    fun getCountLiked():String{
-        return ConverterCountFromIntToString.convertCount(repository.post.countLiked)
-    }
-    fun getCountShared():String{
-        return ConverterCountFromIntToString.convertCount(repository.post.countShared)
-    }
 }
