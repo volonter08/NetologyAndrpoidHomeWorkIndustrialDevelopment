@@ -1,4 +1,4 @@
-package com.example.netologyandroidhomework1.model
+package com.example.netologyandroidhomework1.utills
 
 class ConverterCountFromIntToString {
     companion object {

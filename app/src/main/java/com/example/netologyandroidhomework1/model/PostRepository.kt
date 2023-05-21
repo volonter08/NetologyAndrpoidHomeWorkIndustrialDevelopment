@@ -12,25 +12,22 @@ class PostRepository:Repository {
     override fun get(): LiveData<Post> {
         return data
     }
-    fun notifyData(){
-        data.value= post
-    }
     fun like():Boolean{
         if (!post.isLiked) {
             post.countLiked++
             post.isLiked = true
+            data.value = post
             return true
         }
-        data.value = post
         return false
     }
     fun dislike():Boolean{
         if (post.isLiked) {
             post.countLiked--
             post.isLiked = false
+            data.value = post
             return true
         }
-        data.value = post
         return false
     }
 
