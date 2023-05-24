@@ -7,11 +7,11 @@ class PostViewModel: ViewModel() {
     private val repository = PostRepository()
     val data = repository.get()
 
-    fun likeOrDislike(){
-        if(!repository.like())
-            repository.dislike()
+    fun likeOrDislike(id:Int){
+        if(!repository.like(id))
+            repository.dislike(id)
     }
-    fun share(){
-        repository.share()
+    fun share(id:Int){
+        repository.share(id)
     }
 }

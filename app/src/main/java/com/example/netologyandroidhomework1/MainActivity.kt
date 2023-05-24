@@ -3,6 +3,7 @@ package com.example.netologyandroidhomework1
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.netologyandroidhomework1.adapter.PostAdapter
 import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
 import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
@@ -13,25 +14,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
         val viewModel:PostViewModel by viewModels()
-        viewModel.data.observe(this){ post->
-            viewBinding.apply {
-                author.text= post.author
-                date.text = post.published
-                content.text= post.content
-                countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)
-                countShared.text = ConverterCountFromIntToString.convertCount(post.countShared)
-                like.setImageResource(if(post.isLiked) (R.drawable.baseline_favorite_24) else
-                    (R.drawable.baseline_favorite_border_24))
-
-            }
-        }
-        val likeButton = viewBinding.like
-        val shareButton = viewBinding.share
-        likeButton.setOnClickListener{
-            viewModel.likeOrDislike()
-        }
-        shareButton.setOnClickListener{
-            viewModel.share()
+        val postAdapter= PostAdapter(viewModel::likeOrDislike,viewModel::share)
+        viewBinding.root.adapter = postAdapter
+        viewModel.data.observe(this){ posts->
+            postAdapter.submitList(posts)
         }
     }
 }
