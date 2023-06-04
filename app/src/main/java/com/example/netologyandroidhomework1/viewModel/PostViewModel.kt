@@ -14,4 +14,13 @@ class PostViewModel: ViewModel() {
     fun share(id:Int){
         repository.share(id)
     }
+    fun remove(id:Int){
+        repository.remove(id)
+    }
+    fun createPost(content:String){
+        repository.createPost(content)
+    }
+    fun update(id:Int, newContent:String){
+        repository.update(id,newContent)
+    }
 }
