@@ -1,32 +1,65 @@
 package com.example.netologyandroidhomework1.viewHolder
 
+import android.os.Build
+import android.util.Log
+import android.widget.PopupMenu
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Recycler
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.viewbinding.ViewBinding
+import com.example.netologyandroidhomework1.MainActivity
+import com.example.netologyandroidhomework1.OnButtonTouchListener
 import com.example.netologyandroidhomework1.R
 import com.example.netologyandroidhomework1.databinding.PostBinding
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
 
-class PostHolder(private val binding: PostBinding,val onLikeClick: (Int) -> Unit,val onShareClick:(Int)->Unit) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(post: Post){
+class PostHolder(
+    private val binding: PostBinding,
+    val listener:OnButtonTouchListener
+) : RecyclerView.ViewHolder(binding.root) {
+
+    fun bind(post: Post) {
         val likeButton = binding.like
         val shareButton = binding.share
-        likeButton.setOnClickListener{
-            onLikeClick(post.id)
+        binding.menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options)
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.remove -> {
+                            listener.onRemoveClick(post.id)
+                            true
+                        }
+                        R.id.update-> {
+                          listener.onUpdateCLick(post.id,post.content)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    setForceShowIcon(true)
+
+            }.show()
         }
-        shareButton.setOnClickListener{
-            onShareClick(post.id)
+        likeButton.setOnClickListener {
+            listener.onLikeCLick(post.id)
+        }
+        shareButton.setOnClickListener {
+            listener.onShareCLick(post.id)
         }
         binding.apply {
-            author.text= post.author
+            author.text = post.author
             date.text = post.published
-            content.text= post.content
+            content.text = post.content
             countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)
             countShared.text = ConverterCountFromIntToString.convertCount(post.countShared)
-            like.setImageResource(if(post.isLiked) (R.drawable.baseline_favorite_24) else
-                (R.drawable.baseline_favorite_border_24))
+            like.setImageResource(
+                if (post.isLiked) (R.drawable.baseline_favorite_24) else
+                    (R.drawable.baseline_favorite_border_24)
+            )
         }
     }
 }

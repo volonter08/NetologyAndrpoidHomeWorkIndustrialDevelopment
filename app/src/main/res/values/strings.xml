@@ -2,4 +2,7 @@
     <string name="app_name">NMedia!</string>
     <string name = "text"> NMedia!</string>
     <string name="authorTextSize"> 17sp</string>
+    <string name="remove">Remove</string>
+    <string name="update">Update</string>
+    <string name="edit_content">Edit Content</string>
 </resources>

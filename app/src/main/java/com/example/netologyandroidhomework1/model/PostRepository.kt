@@ -4,19 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
 class PostRepository : Repository<List<Post>> {
+    var nextId:Int = 1
     var listPost: List<Post> = listOf(
         Post(
-            id = 1,
+            id = nextId++,
             author = "Нетология. Университет интернет-профессий будущего",
-            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
             published = "21 мая в 21:56",
             countLiked = 889,
             countShared = 888,
         ),
         Post(
-            id = 2,
+            id = nextId++,
             author = "Нетология. Университет интернет-профессий будущего",
-            content = "Привет, это новая Нетология! Когда-то Нетология начиналась с интенсивов по онлайн-маркетингу. Затем появились курсы по дизайну, разработке, аналитике и управлению. Мы растём сами и помогаем расти студентам: от новичков до уверенных профессионалов. Но самое важное остаётся с нами: мы верим, что в каждом уже есть сила, которая заставляет хотеть больше, целиться выше, бежать быстрее. Наша миссия — помочь встать на путь роста и начать цепочку перемен → http://netolo.gy/fyb",
             published = "21 мая в 21:56",
             countLiked = 900,
             countShared = 888,
@@ -61,6 +60,29 @@ class PostRepository : Repository<List<Post>> {
         listPost = listPost.map {
             if (it.id == id) {
                 it.copy(countShared = it.countShared + 1)
+            } else it
+        }
+        data.value = listPost
+    }
+    fun remove(id:Int){
+        listPost = listPost.filter {
+            it.id!=id
+        }
+        data.value = listPost
+    }
+    fun createPost(content:String){
+        val newPost = Post(
+            id = nextId++,
+            content = content,
+            published = "now"
+        )
+        listPost = listOf(newPost) + listPost
+        data.value = listPost
+    }
+    fun update(id:Int,newContent:String){
+        listPost = listPost.map {
+            if (it.id == id) {
+               it.copy(content = newContent)
             } else it
         }
         data.value = listPost

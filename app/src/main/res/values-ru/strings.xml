@@ -3,4 +3,7 @@
     <string name="app_name">НМедиа</string>
     <string name = "text"> НМедиа!</string>
     <string name="authorTextSize"> 17sp</string>
+    <string name="remove">Удалить</string>
+    <string name="update">Редактировать</string>
+    <string name="edit_content">Редактировать контент</string>
 </resources>
