@@ -54,12 +54,9 @@ class PostHolder(
             author.text = post.author
             date.text = post.published
             content.text = post.content
-            countLiked.text = ConverterCountFromIntToString.convertCount(post.countLiked)
-            countShared.text = ConverterCountFromIntToString.convertCount(post.countShared)
-            like.setImageResource(
-                if (post.isLiked) (R.drawable.baseline_favorite_24) else
-                    (R.drawable.baseline_favorite_border_24)
-            )
+            like.text = ConverterCountFromIntToString.convertCount(post.countLiked)
+            share.text = ConverterCountFromIntToString.convertCount(post.countShared)
+            like.isChecked = post.isLiked
         }
     }
 }

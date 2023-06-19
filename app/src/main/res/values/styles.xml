@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.App.TextButton" parent="Widget.Material3.Button.TextButton">
+        <item name="android:minHeight">?attr/minTouchTargetSize</item>
+        <item name="android:minWidth">?attr/minTouchTargetSize</item>
+        <item name="android:textColor">?attr/colorOnSecondaryContainer</item>
+    </style>
+
+    <style name="Widget.App.TextButton.Like">
+        <item name="iconTint">@color/like_check_box_tint</item>
+    </style>
+
+    <style name="Widget.App.TextButton.Share">
+        <item name="iconTint">@color/share_tint</item>
+    </style>
+
+    <style name="Widget.App.IconButton.Options" parent="Widget.Material3.Button.IconButton">
+        <item name="iconTint">@color/share_tint</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingRight">0dp</item>
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+    </style>
+    <style name="ThemeOverlay.App" parent="ThemeOverlay.Material3.Light">
+        <item name="materialButtonStyle">@style/Widget.MaterialComponents.Button</item>
+    </style>
+</resources>
