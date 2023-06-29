@@ -1,6 +1,7 @@
 package com.example.netologyandroidhomework1.viewModel
 
 import androidx.lifecycle.ViewModel
+import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.model.PostRepository
 
 class PostViewModel: ViewModel() {
@@ -20,7 +21,7 @@ class PostViewModel: ViewModel() {
     fun createPost(content:String){
         repository.createPost(content)
     }
-    fun update(id:Int, newContent:String){
-        repository.update(id,newContent)
+    fun update(post: Post){
+        repository.update(post)
     }
 }

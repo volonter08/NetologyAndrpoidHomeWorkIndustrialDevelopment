@@ -79,10 +79,10 @@ class PostRepository : Repository<List<Post>> {
         listPost = listOf(newPost) + listPost
         data.value = listPost
     }
-    fun update(id:Int,newContent:String){
+    fun update(post:Post){
         listPost = listPost.map {
-            if (it.id == id) {
-               it.copy(content = newContent)
+            if (it.id == post.id) {
+               post
             } else it
         }
         data.value = listPost

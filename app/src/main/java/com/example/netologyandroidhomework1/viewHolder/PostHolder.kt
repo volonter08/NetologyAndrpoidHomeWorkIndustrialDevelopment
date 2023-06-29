@@ -1,19 +1,17 @@
 package com.example.netologyandroidhomework1.viewHolder
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
-import android.util.Log
+import android.view.View
 import android.widget.PopupMenu
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import androidx.viewbinding.ViewBinding
-import com.example.netologyandroidhomework1.MainActivity
 import com.example.netologyandroidhomework1.OnButtonTouchListener
 import com.example.netologyandroidhomework1.R
 import com.example.netologyandroidhomework1.databinding.PostBinding
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
+import java.net.URI
 
 class PostHolder(
     private val binding: PostBinding,
@@ -33,7 +31,7 @@ class PostHolder(
                             true
                         }
                         R.id.update-> {
-                          listener.onUpdateCLick(post.id,post.content)
+                          listener.onUpdateCLick(post)
                             true
                         }
                         else -> false
@@ -48,7 +46,16 @@ class PostHolder(
             listener.onLikeCLick(post.id)
         }
         shareButton.setOnClickListener {
-            listener.onShareCLick(post.id)
+            listener.onShareCLick(post)
+        }
+        if (post.videoUrl.isNotBlank()){
+            binding.videoLayout.visibility= View.VISIBLE
+            binding.videoLayout.setOnClickListener{
+                listener.onStartVideo(post)
+            }
+            binding.iconButton.setOnClickListener{
+                listener.onStartVideo(post)
+            }
         }
         binding.apply {
             author.text = post.author

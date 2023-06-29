@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name = "like_tint"> #F83838</color>
     <color name = "share_tint">#585858</color>
+    <color name = "save_or_create_button">#FCE3DE</color>
 </resources>

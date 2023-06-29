@@ -22,7 +22,14 @@
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
     </style>
+
     <style name="ThemeOverlay.App" parent="ThemeOverlay.Material3.Light">
         <item name="materialButtonStyle">@style/Widget.MaterialComponents.Button</item>
+    </style>
+
+    <style name="Widget.App.SaveOrCreateButton" parent="Widget.Material3.Button.Icon">
+        <item name="backgroundTint">@color/save_or_create_button</item>
+        <item name="android:textColor"> @color/black</item>
+        <item name ="iconTint"> @color/black</item>
     </style>
 </resources>
