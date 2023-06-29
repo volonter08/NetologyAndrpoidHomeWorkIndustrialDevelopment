@@ -30,8 +30,7 @@ class MainActivity : AppCompatActivity() {
 
                 }.show()
             }
-            else
-            viewModel.createPost(it)
+            else viewModel.createPost(it)
         }
         val editPostLauncher = registerForActivityResult(EditPostActivityContract()){post->
             if(post==null){
@@ -39,8 +38,7 @@ class MainActivity : AppCompatActivity() {
 
                 }.show()
             }
-            else
-            viewModel.update(post)
+            else viewModel.update(post)
         }
         val postOnButtonTouchListener = object : OnButtonTouchListener {
             override fun onLikeCLick(id: Int) =
