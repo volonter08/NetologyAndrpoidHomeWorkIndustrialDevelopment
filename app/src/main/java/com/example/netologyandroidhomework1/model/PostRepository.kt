@@ -1,27 +1,41 @@
 package com.example.netologyandroidhomework1.model
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-class PostRepository : Repository<List<Post>> {
+class PostRepository(context: Context) : Repository<List<Post>> {
     var nextId:Int = 1
-    var listPost: List<Post> = listOf(
-        Post(
-            id = nextId++,
-            author = "Нетология. Университет интернет-профессий будущего",
-            published = "21 мая в 21:56",
-            countLiked = 889,
-            countShared = 888,
-        ),
-        Post(
-            id = nextId++,
-            author = "Нетология. Университет интернет-профессий будущего",
-            published = "21 мая в 21:56",
-            countLiked = 900,
-            countShared = 888,
-        ),
-    )
+    var listPost: List<Post> = emptyList()
     val data: MutableLiveData<List<Post>> = MutableLiveData(listPost)
+    val fileName = "posts.json"
+    val type = TypeToken.getParameterized(List::class.java,Post::class.java).type
+    val file = context.filesDir.resolve(fileName)
+    init {
+        if(file.exists()){
+            file.bufferedReader().use{
+                try {
+                    listPost = Gson().fromJson(it,type)
+                    data.value = listPost
+                }
+                catch(_:Exception) {
+                }
+            }
+        }
+        else{
+            file.createNewFile()
+        }
+    }
+
+
+    fun sync(){
+        file.bufferedWriter().use {
+            it.write(Gson().toJson(listPost))
+        }
+    }
+
     override fun get(): LiveData<List<Post>> {
         return data
     }
@@ -38,6 +52,7 @@ class PostRepository : Repository<List<Post>> {
             } else it
         }
         data.value = listPost
+        sync()
         return returnedBooleanValue
     }
 
@@ -53,6 +68,7 @@ class PostRepository : Repository<List<Post>> {
             } else it
         }
         data.value = listPost
+        sync()
         return returnedBooleanValue
     }
 
@@ -63,12 +79,14 @@ class PostRepository : Repository<List<Post>> {
             } else it
         }
         data.value = listPost
+        sync()
     }
     fun remove(id:Int){
         listPost = listPost.filter {
             it.id!=id
         }
         data.value = listPost
+        sync()
     }
     fun createPost(content:String){
         val newPost = Post(
@@ -78,6 +96,7 @@ class PostRepository : Repository<List<Post>> {
         )
         listPost = listOf(newPost) + listPost
         data.value = listPost
+        sync()
     }
     fun update(post:Post){
         listPost = listPost.map {
@@ -86,5 +105,6 @@ class PostRepository : Repository<List<Post>> {
             } else it
         }
         data.value = listPost
+        sync()
     }
 }
