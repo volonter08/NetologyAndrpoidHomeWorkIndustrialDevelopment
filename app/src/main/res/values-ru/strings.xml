@@ -6,4 +6,6 @@
     <string name="remove">Удалить</string>
     <string name="update">Редактировать</string>
     <string name="edit_content">Редактировать контент</string>
+    <string name = "error_message"> Ошибка. Перезапустите загрузку постов!</string>
+    <string name = "empty_message"> Список постов пуст! </string>
 </resources>

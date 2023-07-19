@@ -6,6 +6,7 @@ import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
 import android.net.Uri
 import android.opengl.Visibility
 import android.os.Bundle
+import android.view.View
 import android.view.View.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
@@ -15,11 +16,13 @@ import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
 import androidx.activity.result.launch
+import androidx.fragment.app.commit
 import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        var flag = 0
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
@@ -30,7 +33,9 @@ class MainActivity : AppCompatActivity() {
 
                 }.show()
             }
-            else viewModel.createPost(it)
+            else {
+                viewModel.createPost(it)
+            }
         }
         val editPostLauncher = registerForActivityResult(EditPostActivityContract()){post->
             if(post==null){
@@ -41,8 +46,11 @@ class MainActivity : AppCompatActivity() {
             else viewModel.update(post)
         }
         val postOnButtonTouchListener = object : OnButtonTouchListener {
-            override fun onLikeCLick(id: Int) =
-                viewModel.likeOrDislike(id)
+            override fun onLikeCLick(id:Long) =
+                viewModel.like(id)
+            override fun onDislikeCLick(id: Long) {
+                viewModel.dislike(id)
+            }
             override fun onShareCLick(post: Post){
                 val intentSend = Intent().apply {
                     action= Intent.ACTION_SEND
@@ -51,10 +59,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 val chooserIntentSend = Intent.createChooser(intentSend, "getString(R.string.)")
                 startActivity(chooserIntentSend)
-                viewModel.share(post.id)
             }
-            override fun onRemoveClick(id: Int) =
+            override fun onRemoveClick(id: Long) {
                 viewModel.remove(id)
+            }
             override fun onUpdateCLick(post: Post) {
                 editPostLauncher.launch(post)
             /*viewBinding.editText.let { editText ->
@@ -85,16 +93,22 @@ class MainActivity : AppCompatActivity() {
             override fun onCreateClick() {
                 newPostLauncher.launch()
             }
-
-            override fun onStartVideo(post: Post) {
-                val intent = Intent(Intent.ACTION_VIEW,Uri.parse(post.videoUrl) )
-                startActivity(intent)
-            }
         }
         val postAdapter = PostAdapter(postOnButtonTouchListener)
         viewBinding.recycleView.adapter = postAdapter
-        viewModel.data.observe(this) { posts ->
-            postAdapter.submitList(posts)
+        viewModel.data.observe(this) { feedModel ->
+            feedModel.run {
+                viewBinding.progressBar.visibility = if (loading) VISIBLE else GONE
+                when{
+                    error-> viewBinding.emtyOrErrorMessage.text = getString(R.string.error_message)
+                    empty-> viewBinding.emtyOrErrorMessage.text = getString(R.string.empty_message)
+                }
+                viewBinding.emtyOrErrorMessage.visibility = if (error||empty) VISIBLE else GONE
+                if (flag == 1) {
+                 flag++
+                }
+                postAdapter.submitList(feedModel.posts)
+            }
         }
         viewBinding.createButton.setOnClickListener {
             postOnButtonTouchListener.onCreateClick()

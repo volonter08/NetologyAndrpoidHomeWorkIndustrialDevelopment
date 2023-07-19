@@ -66,29 +66,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/barrier"
-        app:layout_constraintBottom_toTopOf="@id/videoLayout"
+        app:layout_constraintBottom_toTopOf="@id/barrier2"
         android:lineSpacingExtra="@dimen/lineSpacingExtra"
         android:layout_marginTop="10dp"
         />
-    <FrameLayout
-        android:id="@+id/videoLayout"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:layout_constraintBottom_toTopOf="@id/barrier2"
-        android:visibility="gone">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/picture_zaglushka"/>
-        <com.google.android.material.button.MaterialButton
-            style="?attr/materialIconButtonFilledStyle"
-            android:id="@+id/iconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:icon="@drawable/baseline_play_arrow_24"
-            android:layout_gravity="center"
-        />
-    </FrameLayout>
     <androidx.constraintlayout.widget.Barrier
         android:id = "@+id/barrier2"
         android:layout_width="wrap_content"

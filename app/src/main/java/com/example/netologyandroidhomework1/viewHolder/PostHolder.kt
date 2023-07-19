@@ -15,7 +15,7 @@ import java.net.URI
 
 class PostHolder(
     private val binding: PostBinding,
-    val listener:OnButtonTouchListener
+    val listener: OnButtonTouchListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) {
@@ -30,8 +30,8 @@ class PostHolder(
                             listener.onRemoveClick(post.id)
                             true
                         }
-                        R.id.update-> {
-                          listener.onUpdateCLick(post)
+                        R.id.update -> {
+                            listener.onUpdateCLick(post)
                             true
                         }
                         else -> false
@@ -43,27 +43,20 @@ class PostHolder(
             }.show()
         }
         likeButton.setOnClickListener {
-            listener.onLikeCLick(post.id)
+            if (!post.likedByMe)
+                listener.onLikeCLick(post.id)
+            else
+                listener.onDislikeCLick(post.id)
         }
         shareButton.setOnClickListener {
             listener.onShareCLick(post)
-        }
-        if (post.videoUrl.isNotBlank()){
-            binding.videoLayout.visibility= View.VISIBLE
-            binding.videoLayout.setOnClickListener{
-                listener.onStartVideo(post)
-            }
-            binding.iconButton.setOnClickListener{
-                listener.onStartVideo(post)
-            }
         }
         binding.apply {
             author.text = post.author
             date.text = post.published
             content.text = post.content
-            like.text = ConverterCountFromIntToString.convertCount(post.countLiked)
-            share.text = ConverterCountFromIntToString.convertCount(post.countShared)
-            like.isChecked = post.isLiked
+            like.text = ConverterCountFromIntToString.convertCount(post.likes)
+            like.isChecked = post.likedByMe
         }
     }
 }

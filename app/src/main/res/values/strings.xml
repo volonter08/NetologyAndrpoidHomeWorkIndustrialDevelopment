@@ -5,4 +5,6 @@
     <string name="remove">Remove</string>
     <string name="update">Update</string>
     <string name="edit_content">Edit Content</string>
+    <string name = "error_message"> Error. To reload posts!</string>
+    <string name = "empty_message"> List of posts is empty! </string>
 </resources>
