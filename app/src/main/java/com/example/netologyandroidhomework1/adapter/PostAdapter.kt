@@ -1,5 +1,6 @@
 package com.example.netologyandroidhomework1.adapter
 
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,12 +14,12 @@ import com.example.netologyandroidhomework1.diffutill.PostDiffCallback
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.viewHolder.PostHolder
 
-class PostAdapter(
+class PostAdapter(val context:Context,
     private val  listener:OnButtonTouchListener
 ) : ListAdapter<Post, PostHolder>(PostDiffCallback()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostHolder {
         val binding = PostBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return PostHolder(binding, listener)
+        return PostHolder(context,binding, listener)
     }
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
         val post = getItem(position)

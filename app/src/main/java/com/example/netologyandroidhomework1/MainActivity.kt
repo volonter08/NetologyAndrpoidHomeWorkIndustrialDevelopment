@@ -65,36 +65,12 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onUpdateCLick(post: Post) {
                 editPostLauncher.launch(post)
-            /*viewBinding.editText.let { editText ->
-                    viewBinding.linearLayoutUpdate.visibility = VISIBLE
-                    viewBinding.updateContentText.text = oldContent
-                    viewBinding.save.apply {
-                        setImageResource(R.drawable.baseline_check_circle_24)
-                        setOnClickListener {
-                            viewBinding.linearLayoutUpdate.visibility = GONE
-                            viewBinding.editText.let {
-                                viewBinding.editText.clearFocus()
-                                AndroidUtils.hideKeyBoard(viewBinding.editText)
-                                viewModel.update(id, newContent = it.text.toString())
-                                it.text.clear()
-                                setImageResource(R.drawable.baseline_create_24)
-                                setOnClickListener {
-                                    onCreateClick()
-                                }
-                            }
-                        }
-                    }
-                    AndroidUtils.showKeyBoard(editText)
-                    editText.setText(oldContent)
-                }
-
-                 */
             }
             override fun onCreateClick() {
                 newPostLauncher.launch()
             }
         }
-        val postAdapter = PostAdapter(postOnButtonTouchListener)
+        val postAdapter = PostAdapter(context = applicationContext,postOnButtonTouchListener)
         viewBinding.recycleView.adapter = postAdapter
         viewModel.data.observe(this) { feedModel ->
             feedModel.run {
