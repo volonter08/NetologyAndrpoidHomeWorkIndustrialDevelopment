@@ -41,36 +41,9 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
             override fun onFailure(call: Call, e: IOException) {
                 postCallback.onError()
             }
-
             override fun onResponse(call: Call, response: Response) {
                 val listPosts = gson.fromJson(response.body?.string(), typeToken)
-                val loadedAvatarsPosts = AtomicInteger(0)
-                val isAvatarsLoaded = AtomicBoolean(false)
-                listPosts.filter { it.authorAvatar != null }.apply {
-                    forEach {
-                        client.newCall(
-                            Request.Builder().url("${BASE_URL}avatars/${it.authorAvatar}").build()
-                        )
-                            .enqueue(object : Callback {
-                                override fun onFailure(call: Call, e: IOException) {
-
-                                }
-
-                                override fun onResponse(call: Call, response: Response) {
-                                    context.openFileOutput(it.authorAvatar, MODE_PRIVATE).use {
-                                        it.write(response.body!!.bytes())
-                                    }
-                                    loadedAvatarsPosts.incrementAndGet()
-                                    if (loadedAvatarsPosts.get() == size && isAvatarsLoaded.compareAndSet(
-                                            false,
-                                            true
-                                        )
-                                    )
-                                        postCallback.onLoadPosts(listPosts)
-                                }
-                            })
-                    }
-                }
+                postCallback.onLoadPosts(listPosts)
             }
         })
     }

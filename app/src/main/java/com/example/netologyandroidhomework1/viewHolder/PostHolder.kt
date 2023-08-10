@@ -1,16 +1,22 @@
 package com.example.netologyandroidhomework1.viewHolder
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.BitmapFactory
+import android.graphics.Point
+import android.graphics.drawable.AnimatedImageDrawable
+import android.net.Uri
 import android.os.Build
 import android.util.TypedValue
+import android.view.Display
+import android.view.WindowManager
 import android.widget.PopupMenu
-import androidx.core.graphics.scale
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.netologyandroidhomework1.OnButtonTouchListener
 import com.example.netologyandroidhomework1.R
 import com.example.netologyandroidhomework1.databinding.PostBinding
 import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.model.PostRepository.Companion.BASE_URL
 import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
 
 
@@ -20,6 +26,7 @@ class PostHolder(
     val listener: OnButtonTouchListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     fun bind(post: Post) {
         val likeButton = binding.like
         val shareButton = binding.share
@@ -27,13 +34,17 @@ class PostHolder(
         val valueInPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP, valueInDp.toFloat(), context.resources.displayMetrics
         ).toInt()
-        binding.avatar.apply {
+        binding.avatar.also {
             if(post.authorAvatar!=null){
-                setImageBitmap(
-                    BitmapFactory.decodeStream(context.openFileInput(post.authorAvatar)).scale(
-                        valueInPx,valueInPx,true
-                    )
-                )
+                val animPlaceholder =
+                    context.getDrawable(R.drawable.loading_avatar) as AnimatedImageDrawable
+                animPlaceholder.start() // probably needed
+                Glide.with(context).load(Uri.parse("${BASE_URL}avatars/${post.authorAvatar}")).placeholder(animPlaceholder).circleCrop().into(it)
+            }
+        }
+        binding.attachment.also {
+            if(post.attachment!=null){
+                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).into(it)
             }
         }
         binding.menu.setOnClickListener {
