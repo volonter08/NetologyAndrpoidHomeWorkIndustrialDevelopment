@@ -1,23 +1,22 @@
 package com.example.netologyandroidhomework1
 
-import android.annotation.SuppressLint
+import android.animation.ObjectAnimator
+import android.animation.TypeEvaluator
 import android.content.Intent
-import android.icu.text.DateTimePatternGenerator.PatternInfo.OK
-import android.net.Uri
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.View
+import android.view.Gravity
 import android.view.View.*
-import androidx.activity.result.ActivityResultLauncher
+import android.view.WindowManager
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.netologyandroidhomework1.adapter.PostAdapter
 import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
-import androidx.activity.result.launch
-import androidx.fragment.app.commit
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -75,6 +74,28 @@ class MainActivity : AppCompatActivity() {
         viewModel.data.observe(this) { feedModel ->
             feedModel.run {
                 viewBinding.progressBar.visibility = if (loading) VISIBLE else GONE
+                if( !isSuccessFull){
+                    MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.request_is_not_successful).setPositiveButton("OK",null).create().apply {
+                        window?.setGravity(Gravity.TOP)
+                        ObjectAnimator.ofObject(this.window,"attributes",object :
+                            TypeEvaluator<WindowManager.LayoutParams> {
+                            override fun evaluate(
+                                fraction: Float,
+                                startValue: WindowManager.LayoutParams,
+                                endValue: WindowManager.LayoutParams
+                            ): WindowManager.LayoutParams {
+                                val attr=  WindowManager.LayoutParams()
+                                attr.copyFrom(window?.attributes)
+                                return attr.apply {
+                                    y = (startValue.y + (endValue.y - startValue.y)*fraction).toInt()
+                                }
+                            }
+                        },WindowManager.LayoutParams().apply { y = 2000}).apply {
+                            duration = 40000
+                            start()
+                        }
+                    }.show()
+                }
                 when{
                     error-> viewBinding.emtyOrErrorMessage.text = getString(R.string.error_message)
                     empty-> viewBinding.emtyOrErrorMessage.text = getString(R.string.empty_message)

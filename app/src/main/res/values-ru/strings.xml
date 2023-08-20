@@ -8,4 +8,5 @@
     <string name="edit_content">Редактировать контент</string>
     <string name = "error_message"> Ошибка. Перезапустите загрузку постов!</string>
     <string name = "empty_message"> Список постов пуст! </string>
+    <string name = "request_is_not_successful" > Запрос не успешен!!!</string>
 </resources>

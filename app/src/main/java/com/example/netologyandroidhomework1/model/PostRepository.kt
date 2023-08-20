@@ -5,18 +5,22 @@ import android.content.Context.MODE_PRIVATE
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.BaseBundle
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.netologyandroidhomework1.OkHttpClientObject
+import com.example.netologyandroidhomework1.RetrofitObject
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import okhttp3.Call
-import okhttp3.Callback
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
+import retrofit2.Retrofit
 import java.io.File
 import java.io.IOException
 import java.net.URI
@@ -32,18 +36,25 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
     }
 
     private val typeToken = object : TypeToken<List<Post>>() {}
-    val client = OkHttpClient()
+    val client = OkHttpClientObject.get()
     val gson = Gson()
+    val retrofitService = RetrofitObject.service
     private val jsonType = "application/json".toMediaType()
     override fun getAll() {
         val postsRequest = Request.Builder().url("${BASE_URL}api/posts").build()
-        client.newCall(postsRequest).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.getAll().enqueue(object : Callback<List<Post>> {
+
+            override fun onFailure(call: Call<List<Post>>, t: Throwable) {
+                t.printStackTrace()
                 postCallback.onError()
             }
-            override fun onResponse(call: Call, response: Response) {
-                val listPosts = gson.fromJson(response.body?.string(), typeToken)
-                postCallback.onLoadPosts(listPosts)
+
+            override fun onResponse(
+                call: Call<List<Post>>,
+                response: Response<List<Post>>
+            ) {
+                val listPosts = response.body()
+                postCallback.onLoadPosts(listPosts ?: emptyList(), response.isSuccessful)
             }
         })
     }
@@ -53,16 +64,14 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
         val postsRequestLike =
             Request.Builder().url("${BASE_URL}api/posts/$id/likes").method("POST", reqbody)
                 .header("Content-Length", "0").build()
-        client.newCall(postsRequestLike).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.likeById(id).enqueue(object : Callback<Post> {
+            override fun onFailure(call: Call<Post>, t: Throwable) {
                 postCallback.onError()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val likedPost =
-                    gson.fromJson(response.body?.string(), TypeToken.get(Post::class.java))
-
-                postCallback.onLike(likedPost)
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                val likedPost = response.body()
+                postCallback.onLike(likedPost, response.isSuccessful)
             }
         })
     }
@@ -70,15 +79,14 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
     fun dislike(id: Long) {
         val postsRequestDislike =
             Request.Builder().url("${BASE_URL}api/posts/$id/likes").delete().build()
-        client.newCall(postsRequestDislike).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.dislikeById(id).enqueue(object : Callback<Post> {
+            override fun onFailure(call: Call<Post>, t: Throwable) {
                 postCallback.onError()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val disLikedPost =
-                    gson.fromJson(response.body?.string(), TypeToken.get(Post::class.java))
-                postCallback.onDisLike(disLikedPost)
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                val disLikedPost = response.body()
+                postCallback.onDisLike(disLikedPost, response.isSuccessful)
             }
         })
     }
@@ -88,13 +96,13 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
 
     fun remove(id: Long) {
         val postsRequestRemove = Request.Builder().url("${BASE_URL}api/posts/$id").delete().build()
-        client.newCall(postsRequestRemove).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.removeById(id).enqueue(object : Callback<Unit> {
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
                 postCallback.onError()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                postCallback.onRemove(id)
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                postCallback.onRemove(id, response.isSuccessful)
             }
         })
     }
@@ -104,14 +112,15 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
             gson.toJson(Post(content = content))
                 .toRequestBody(jsonType)
         ).build()
-        client.newCall(postsRequestCreate).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.save(Post(content = content)).enqueue(object : Callback<Post> {
+            override fun onFailure(call: Call<Post>, t: Throwable) {
                 postCallback.onError()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val createdPost = gson.fromJson(response.body?.string(), Post::class.java)
-                postCallback.onCreatePost(createdPost)
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                val createdPost = response.body()
+                postCallback.onCreatePost(createdPost, response.isSuccessful)
+
             }
         })
     }
@@ -121,14 +130,15 @@ class PostRepository(val context: Context, val postCallback: PostCallback) :
             gson.toJson(post)
                 .toRequestBody(jsonType)
         ).build()
-        client.newCall(postsRequestUpdate).enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
+        retrofitService.save(post).enqueue(object : Callback<Post> {
+            override fun onFailure(call: Call<Post>, t: Throwable) {
                 postCallback.onError()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                val updatedPost = gson.fromJson(response.body?.string(), Post::class.java)
-                postCallback.onUpdate(updatedPost)
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                val updatedPost = response.body()
+                postCallback.onUpdate(updatedPost, response.isSuccessful)
+
             }
         })
     }

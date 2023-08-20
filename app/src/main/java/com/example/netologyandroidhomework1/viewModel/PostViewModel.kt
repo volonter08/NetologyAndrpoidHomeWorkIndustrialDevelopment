@@ -16,49 +16,49 @@ import kotlin.concurrent.thread
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postCallback = object : PostCallback {
-        override fun onLoadPosts(listPosts: List<Post>) {
+        override fun onLoadPosts(listPosts: List<Post>,isSuccessFul:Boolean) {
             _data.postValue(
-                FeedModel(listPosts, empty = listPosts.isEmpty())
+                FeedModel(listPosts, empty = listPosts.isEmpty(), isSuccessFull = isSuccessFul)
             )
         }
 
-        override fun onLike(likedPost: Post) {
-            _data.postValue(FeedModel(posts = _data.value!!.posts.map {
-                if (it.id == likedPost.id) {
+        override fun onLike(likedPost: Post?,isSuccessFul:Boolean) {
+            _data.postValue(FeedModel(posts = if(isSuccessFul) _data.value!!.posts.map {
+                if (it.id == likedPost!!.id) {
                     likedPost
                 } else
                     it
-            }))
+            } else _data.value!!.posts ,isSuccessFull = isSuccessFul))
         }
 
-        override fun onDisLike(disLikedPost: Post) {
-            _data.postValue(FeedModel(posts = _data.value!!.posts.map {
-                if (it.id == disLikedPost.id) {
+        override fun onDisLike(disLikedPost: Post?,isSuccessFul:Boolean) {
+            _data.postValue(FeedModel(posts = if(isSuccessFul) _data.value!!.posts.map {
+                if (it.id == disLikedPost!!.id) {
                     disLikedPost
                 } else
                     it
-            }))
+            } else _data.value!!.posts,isSuccessFull = isSuccessFul))
         }
 
-        override fun onUpdate(updatedPost: Post) {
-            _data.postValue(FeedModel(data.value!!.posts.map {
-                if (it.id == updatedPost.id) {
-                    updatedPost
+        override fun onUpdate(updatedPost: Post?,isSuccessFul:Boolean) {
+            _data.postValue(FeedModel(if(isSuccessFul) data.value!!.posts.map {
+                if (it.id == updatedPost!!.id) {
+                    updatedPost!!
                 } else
                     it
-            }))
+            } else data.value!!.posts,isSuccessFull = isSuccessFul))
         }
 
-        override fun onCreatePost(createdPost: Post) {
+        override fun onCreatePost(createdPost: Post?,isSuccessFul:Boolean) {
             _data.postValue(
-                FeedModel(_data.value!!.posts + listOf(createdPost))
+                FeedModel(if(isSuccessFul) listOf(createdPost!!)+ _data.value!!.posts else _data.value!!.posts ,isSuccessFull = isSuccessFul )
             )
         }
 
-        override fun onRemove(id: Long) {
+        override fun onRemove(id: Long,isSuccessFul:Boolean) {
             _data.postValue(
-                _data.value?.copy(posts = _data.value?.posts.orEmpty()
-                    .filter { it.id != id }
+                _data.value?.copy(posts = if(isSuccessFul) _data.value!!.posts
+                    .filter { it.id != id }else _data.value!!.posts ,isSuccessFull = isSuccessFul
                 )
             )
         }
@@ -68,7 +68,6 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
                 FeedModel(error = true)
             )
         }
-
     }
 
     private val repository = PostRepository( application,postCallback)

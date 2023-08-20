@@ -39,12 +39,12 @@ class PostHolder(
                 val animPlaceholder =
                     context.getDrawable(R.drawable.loading_avatar) as AnimatedImageDrawable
                 animPlaceholder.start() // probably needed
-                Glide.with(context).load(Uri.parse("${BASE_URL}avatars/${post.authorAvatar}")).placeholder(animPlaceholder).circleCrop().into(it)
+                Glide.with(context).load(Uri.parse("${BASE_URL}avatars/${post.authorAvatar}")).placeholder(animPlaceholder).timeout(10_000).circleCrop().into(it)
             }
         }
         binding.attachment.also {
             if(post.attachment!=null){
-                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).into(it)
+                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).timeout(10_000).into(it)
             }
         }
         binding.menu.setOnClickListener {
