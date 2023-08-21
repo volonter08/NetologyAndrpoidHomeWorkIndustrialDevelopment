@@ -19,7 +19,7 @@ object RetrofitObject {
     }
 }
 interface PostsApiService {
-    @GET("api/post")
+    @GET("api/posts")
     fun getAll(): Call<List<Post>>
 
     @GET("api/posts/{id}")

@@ -71,9 +71,13 @@ class MainActivity : AppCompatActivity() {
         }
         val postAdapter = PostAdapter(context = applicationContext,postOnButtonTouchListener)
         viewBinding.recycleView.adapter = postAdapter
+        viewBinding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.loadPosts()
+        }
         viewModel.data.observe(this) { feedModel ->
             feedModel.run {
                 viewBinding.progressBar.visibility = if (loading) VISIBLE else GONE
+                viewBinding.swipeRefreshLayout.isRefreshing = false
                 if( !isSuccessFull){
                     MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.request_is_not_successful).setPositiveButton("OK",null).create().apply {
                         window?.setGravity(Gravity.TOP)
