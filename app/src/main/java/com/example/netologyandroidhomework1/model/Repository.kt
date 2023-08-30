@@ -3,5 +3,5 @@ package com.example.netologyandroidhomework1.model
 import androidx.lifecycle.LiveData
 
 interface  Repository<T> {
-    fun getAll()
+    suspend fun getAll():List<Post>
 }

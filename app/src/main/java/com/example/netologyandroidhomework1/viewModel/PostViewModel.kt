@@ -11,8 +11,13 @@ import com.example.netologyandroidhomework1.model.PostCallback
 import com.example.netologyandroidhomework1.model.PostRepository
 import com.example.netologyandroidhomework1.utills.SingleLiveEvent
 import com.google.gson.JsonSyntaxException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.IOException
 import kotlin.concurrent.thread
+import kotlin.coroutines.EmptyCoroutineContext
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postCallback = object : PostCallback {
@@ -81,7 +86,12 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPosts() {
         _data.postValue(FeedModel(loading = true))
-        repository.getAll()
+        CoroutineScope(EmptyCoroutineContext).run{
+            launch{
+                val listPosts = repository.getAll()
+                postCallback.onLoadPosts(listPosts,true)
+            }
+        }
     }
 
     fun like(id: Long) {

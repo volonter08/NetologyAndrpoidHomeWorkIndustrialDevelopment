@@ -13,6 +13,9 @@ import com.example.netologyandroidhomework1.databinding.PostBinding
 import com.example.netologyandroidhomework1.diffutill.PostDiffCallback
 import com.example.netologyandroidhomework1.model.Post
 import com.example.netologyandroidhomework1.viewHolder.PostHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlin.coroutines.EmptyCoroutineContext
 
 class PostAdapter(val context:Context,
     private val  listener:OnButtonTouchListener
@@ -23,6 +26,8 @@ class PostAdapter(val context:Context,
     }
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(post)
+        CoroutineScope(EmptyCoroutineContext).launch {
+            holder.bind(post)
+        }
     }
 }

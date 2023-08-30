@@ -1,6 +1,7 @@
 package com.example.netologyandroidhomework1
 
 import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.model.PostWithAuthor
 
 data class FeedModel(
     val posts: List<Post> = emptyList(),
