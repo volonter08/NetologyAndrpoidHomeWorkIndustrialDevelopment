@@ -1,17 +1,13 @@
 package com.example.netologyandroidhomework1.adapter
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.PopupMenu
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import com.example.netologyandroidhomework1.OnButtonTouchListener
-import com.example.netologyandroidhomework1.R
 import com.example.netologyandroidhomework1.databinding.PostBinding
 import com.example.netologyandroidhomework1.diffutill.PostDiffCallback
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.dto.Post
 import com.example.netologyandroidhomework1.viewHolder.PostHolder
 
 class PostAdapter(val context:Context,
@@ -22,7 +18,11 @@ class PostAdapter(val context:Context,
         return PostHolder(context,binding, listener)
     }
     override fun onBindViewHolder(holder: PostHolder, position: Int) {
-        val post = getItem(position)
+        val post = currentList[position]
         holder.bind(post)
+    }
+
+    override fun getItemCount(): Int {
+        return currentList.size
     }
 }

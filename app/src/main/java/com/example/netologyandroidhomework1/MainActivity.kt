@@ -10,18 +10,17 @@ import android.view.WindowManager
 import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.example.netologyandroidhomework1.adapter.PostAdapter
 import com.example.netologyandroidhomework1.databinding.ActivityMainBinding
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.dto.Post
 import com.example.netologyandroidhomework1.viewModel.PostViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 
 
 class MainActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        var flag = 0
         val viewBinding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
@@ -45,8 +44,9 @@ class MainActivity : AppCompatActivity() {
             else viewModel.update(post)
         }
         val postOnButtonTouchListener = object : OnButtonTouchListener {
-            override fun onLikeCLick(id:Long) =
+            override fun onLikeCLick(id:Long) {
                 viewModel.like(id)
+            }
             override fun onDislikeCLick(id: Long) {
                 viewModel.dislike(id)
             }
@@ -72,44 +72,45 @@ class MainActivity : AppCompatActivity() {
         val postAdapter = PostAdapter(context = applicationContext,postOnButtonTouchListener)
         viewBinding.recycleView.adapter = postAdapter
         viewBinding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.loadPosts()
+            viewModel.refreshPosts()
         }
-        viewModel.data.observe(this) { feedModel ->
+        viewModel.dataState.observe(this) { feedModel ->
             feedModel.run {
-                viewBinding.progressBar.visibility = if (loading) VISIBLE else GONE
-                viewBinding.swipeRefreshLayout.isRefreshing = false
-                if( !isSuccessFull){
-                    MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.request_is_not_successful).setPositiveButton("OK",null).create().apply {
-                        window?.setGravity(Gravity.TOP)
-                        ObjectAnimator.ofObject(this.window,"attributes",object :
-                            TypeEvaluator<WindowManager.LayoutParams> {
-                            override fun evaluate(
-                                fraction: Float,
-                                startValue: WindowManager.LayoutParams,
-                                endValue: WindowManager.LayoutParams
-                            ): WindowManager.LayoutParams {
-                                val attr=  WindowManager.LayoutParams()
-                                attr.copyFrom(window?.attributes)
-                                return attr.apply {
-                                    y = (startValue.y + (endValue.y - startValue.y)*fraction).toInt()
-                                }
-                            }
-                        },WindowManager.LayoutParams().apply { y = 2000}).apply {
-                            duration = 40000
-                            start()
-                        }
-                    }.show()
-                }
+                viewBinding.progressBar.isVisible = loading
+                viewBinding.swipeRefreshLayout.isRefreshing = isRefreshed
                 when{
-                    error-> viewBinding.emtyOrErrorMessage.text = getString(R.string.error_message)
-                    empty-> viewBinding.emtyOrErrorMessage.text = getString(R.string.empty_message)
+                    error -> {
+                        MaterialAlertDialogBuilder(this@MainActivity).setTitle(R.string.request_is_not_successful).setPositiveButton("OK"){ dialog,which->
+                            feedModel.errorRetryListener?.onRetry()
+                        }.create().apply {
+                            window?.setGravity(Gravity.TOP)
+                            ObjectAnimator.ofObject(this.window,"attributes",object :
+                                TypeEvaluator<WindowManager.LayoutParams> {
+                                override fun evaluate(
+                                    fraction: Float,
+                                    startValue: WindowManager.LayoutParams,
+                                    endValue: WindowManager.LayoutParams
+                                ): WindowManager.LayoutParams {
+                                    val attr=  WindowManager.LayoutParams()
+                                    attr.copyFrom(window?.attributes)
+                                    return attr.apply {
+                                        y = (startValue.y + (endValue.y - startValue.y)*fraction).toInt()
+                                    }
+                                }
+                            },WindowManager.LayoutParams().apply { y = 2000}).apply {
+                                duration = 40000
+                                start()
+                            }
+                        }.show()
+                    }
+
                 }
-                viewBinding.emtyOrErrorMessage.visibility = if (error||empty) VISIBLE else GONE
-                if (flag == 1) {
-                 flag++
-                }
-                postAdapter.submitList(feedModel.posts)
             }
+        }
+        viewModel.data.observe(this){
+            viewBinding.progressBar.isVisible= false
+            viewBinding.emtyOrErrorMessage.isVisible = it.posts.isEmpty()
+            postAdapter.submitList(it.posts)
         }
         viewBinding.createButton.setOnClickListener {
             postOnButtonTouchListener.onCreateClick()

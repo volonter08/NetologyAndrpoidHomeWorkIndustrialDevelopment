@@ -2,20 +2,18 @@ package com.example.netologyandroidhomework1.viewHolder
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Point
 import android.graphics.drawable.AnimatedImageDrawable
 import android.net.Uri
 import android.os.Build
 import android.util.TypedValue
-import android.view.Display
-import android.view.WindowManager
+import android.view.View
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.netologyandroidhomework1.OnButtonTouchListener
 import com.example.netologyandroidhomework1.R
 import com.example.netologyandroidhomework1.databinding.PostBinding
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.dto.Post
 import com.example.netologyandroidhomework1.model.PostRepository.Companion.BASE_URL
 import com.example.netologyandroidhomework1.utills.ConverterCountFromIntToString
 
@@ -28,6 +26,7 @@ class PostHolder(
 
     @SuppressLint("UseCompatLoadingForDrawables")
     fun bind(post: Post) {
+        println(post)
         val likeButton = binding.like
         val shareButton = binding.share
         val valueInDp = 64
@@ -44,7 +43,11 @@ class PostHolder(
         }
         binding.attachment.also {
             if(post.attachment!=null){
-                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).timeout(10_000).into(it)
+                it.visibility = View.VISIBLE
+                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).timeout(10_000).into(binding.attachment)
+            }
+            else{
+                it.visibility=View.GONE
             }
         }
         binding.menu.setOnClickListener {

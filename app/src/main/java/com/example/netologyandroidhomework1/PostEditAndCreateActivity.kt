@@ -2,16 +2,12 @@ package com.example.netologyandroidhomework1
 
 import android.app.Activity
 import android.content.Intent
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import androidx.activity.viewModels
 import com.example.netologyandroidhomework1.databinding.ActivityPostEditAndCreateBinding
-import com.example.netologyandroidhomework1.model.Post
-import com.example.netologyandroidhomework1.viewModel.PostViewModel
+import com.example.netologyandroidhomework1.dto.Post
 
 class PostEditAndCreateActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,7 +17,6 @@ class PostEditAndCreateActivity : AppCompatActivity() {
         val editText = binding.editText.apply {
             text.clear()
         }
-        val viewModel: PostViewModel by viewModels()
         val button = binding.save
         val cancelButton = binding.cancelButton
         val typeOfOperation = intent.getSerializableExtra("typeOfOperation") as TypeOfOperationForStartNewActivity

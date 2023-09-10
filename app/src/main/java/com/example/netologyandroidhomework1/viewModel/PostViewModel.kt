@@ -4,107 +4,122 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import com.example.netologyandroidhomework1.FeedModel
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.FeedModelState
+import com.example.netologyandroidhomework1.OnRetryListener
+import com.example.netologyandroidhomework1.db.AppDb
+import com.example.netologyandroidhomework1.dto.Post
 import com.example.netologyandroidhomework1.model.PostCallback
 import com.example.netologyandroidhomework1.model.PostRepository
-import com.example.netologyandroidhomework1.utills.SingleLiveEvent
-import com.google.gson.JsonSyntaxException
-import java.io.IOException
-import kotlin.concurrent.thread
+import kotlinx.coroutines.launch
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postCallback = object : PostCallback {
-        override fun onLoadPosts(listPosts: List<Post>,isSuccessFul:Boolean) {
-            _data.postValue(
-                FeedModel(listPosts, empty = listPosts.isEmpty(), isSuccessFull = isSuccessFul)
-            )
-        }
-
-        override fun onLike(likedPost: Post?,isSuccessFul:Boolean) {
-            _data.postValue(FeedModel(posts = if(isSuccessFul) _data.value!!.posts.map {
-                if (it.id == likedPost!!.id) {
-                    likedPost
-                } else
-                    it
-            } else _data.value!!.posts ,isSuccessFull = isSuccessFul))
-        }
-
-        override fun onDisLike(disLikedPost: Post?,isSuccessFul:Boolean) {
-            _data.postValue(FeedModel(posts = if(isSuccessFul) _data.value!!.posts.map {
-                if (it.id == disLikedPost!!.id) {
-                    disLikedPost
-                } else
-                    it
-            } else _data.value!!.posts,isSuccessFull = isSuccessFul))
-        }
-
-        override fun onUpdate(updatedPost: Post?,isSuccessFul:Boolean) {
-            _data.postValue(FeedModel(if(isSuccessFul) data.value!!.posts.map {
-                if (it.id == updatedPost!!.id) {
-                    updatedPost!!
-                } else
-                    it
-            } else data.value!!.posts,isSuccessFull = isSuccessFul))
-        }
-
-        override fun onCreatePost(createdPost: Post?,isSuccessFul:Boolean) {
-            _data.postValue(
-                FeedModel(if(isSuccessFul) listOf(createdPost!!)+ _data.value!!.posts else _data.value!!.posts ,isSuccessFull = isSuccessFul )
-            )
-        }
-
-        override fun onRemove(id: Long,isSuccessFul:Boolean) {
-            _data.postValue(
-                _data.value?.copy(posts = if(isSuccessFul) _data.value!!.posts
-                    .filter { it.id != id }else _data.value!!.posts ,isSuccessFull = isSuccessFul
-                )
-            )
-        }
-
-        override fun onError() {
-            _data.postValue(
-                FeedModel(error = true)
+        override fun onError(onRetryListener: OnRetryListener) {
+            _dataState.postValue(
+                FeedModelState(error = true, errorRetryListener = onRetryListener)
             )
         }
     }
 
-    private val repository = PostRepository( application,postCallback)
-    private val _data: MutableLiveData<FeedModel> = MutableLiveData(FeedModel())
-    val data: LiveData<FeedModel>
-        get() = _data
-
+    private val repository = PostRepository(AppDb.getInstance(application).postDao())
+    val data: LiveData<FeedModel> = repository.data.map(::FeedModel)
+    val _dataState: MutableLiveData<FeedModelState> = MutableLiveData()
+    val dataState:LiveData<FeedModelState>
+    get() = _dataState
     init {
         loadPosts()
     }
 
     fun loadPosts() {
-        _data.postValue(FeedModel(loading = true))
-        repository.getAll()
+        viewModelScope.launch {
+            try {
+                _dataState.postValue(FeedModelState(loading = true))
+                repository.getAll()
+                _dataState.postValue(FeedModelState())
+            } catch (_: Exception) {
+                postCallback.onError {
+                    loadPosts()
+                }
+            }
+        }
+    }
+    fun refreshPosts(){
+        viewModelScope.launch {
+            try {
+                _dataState.postValue(FeedModelState(isRefreshed = true))
+                repository.getAll()
+                _dataState.postValue(FeedModelState())
+            } catch (_: Exception) {
+                postCallback.onError {
+                    refreshPosts()
+                }
+            }
+        }
     }
 
     fun like(id: Long) {
-        repository.like(id)
+        viewModelScope.launch {
+            try {
+               repository.like(id)
+            } catch (_: Exception) {
+                postCallback.onError {
+                    like(id)
+                }
+            }
+        }
     }
 
-    fun dislike(id: Long) {
-        repository.dislike(id)
+    fun dislike(id: Long)  {
+        viewModelScope.launch {
+            try {
+                repository.dislike(id)
+            } catch (_: Exception) {
+                postCallback.onError {
+                    dislike(id)
+                }
+            }
+        }
     }
 
     fun share(id: Int) {
         repository.share(id)
     }
 
-    fun remove(id: Long) {
-        repository.remove(id)
+    fun remove(id: Long)  {
+        viewModelScope.launch {
+            try {
+                repository.remove(id)
+            } catch (_: Exception) {
+                postCallback.onError {
+                    remove(id)
+                }
+            }
+        }
     }
-
     fun createPost(content: String) {
-        repository.createPost(content)
+        viewModelScope.launch {
+            try {
+                repository.createPost(content)
+            } catch (_: Exception) {
+                postCallback.onError {
+                    createPost(content)
+                }
+            }
+        }
     }
 
-    fun update(post: Post) {
-        repository.update(post)
+    fun update(post: Post)  {
+        viewModelScope.launch {
+            try {
+                repository.update(post)
+            } catch (_: Exception) {
+                postCallback.onError {
+                    update(post)
+                }
+            }
+        }
     }
 }

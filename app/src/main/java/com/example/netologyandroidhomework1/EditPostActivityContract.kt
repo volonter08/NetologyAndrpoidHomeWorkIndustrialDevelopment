@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.activity.result.contract.ActivityResultContract
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.dto.Post
 
-class EditPostActivityContract() : ActivityResultContract<Post,Post?>() {
+class EditPostActivityContract() : ActivityResultContract<Post, Post?>() {
     override fun createIntent(context: Context, input: Post): Intent {
         return Intent(context, PostEditAndCreateActivity::class.java).apply {
             putExtra("typeOfOperation", TypeOfOperationForStartNewActivity.EDITING)
@@ -17,7 +17,8 @@ class EditPostActivityContract() : ActivityResultContract<Post,Post?>() {
 
     override fun parseResult(resultCode: Int, intent: Intent?): Post? {
         return if (resultCode== Activity.RESULT_OK)
-            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) intent?.getSerializableExtra("post",Post::class.java)
+            if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.TIRAMISU) intent?.getSerializableExtra("post",
+                Post::class.java)
             else intent?.getSerializableExtra("post") as Post
         else
             null

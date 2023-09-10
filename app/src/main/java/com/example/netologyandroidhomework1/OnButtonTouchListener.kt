@@ -1,6 +1,6 @@
 package com.example.netologyandroidhomework1
 
-import com.example.netologyandroidhomework1.model.Post
+import com.example.netologyandroidhomework1.dto.Post
 
 interface OnButtonTouchListener {
     fun onLikeCLick(id:Long)
