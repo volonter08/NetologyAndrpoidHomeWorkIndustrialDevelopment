@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.drawable.AnimatedImageDrawable
 import android.net.Uri
 import android.os.Build
-import android.util.TypedValue
 import android.view.View
 import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
@@ -26,28 +25,24 @@ class PostHolder(
 
     @SuppressLint("UseCompatLoadingForDrawables")
     fun bind(post: Post) {
-        println(post)
         val likeButton = binding.like
         val shareButton = binding.share
-        val valueInDp = 64
-        val valueInPx = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, valueInDp.toFloat(), context.resources.displayMetrics
-        ).toInt()
         binding.avatar.also {
-            if(post.authorAvatar!=null){
+            if (post.authorAvatar != null) {
                 val animPlaceholder =
                     context.getDrawable(R.drawable.loading_avatar) as AnimatedImageDrawable
                 animPlaceholder.start() // probably needed
-                Glide.with(context).load(Uri.parse("${BASE_URL}avatars/${post.authorAvatar}")).placeholder(animPlaceholder).timeout(10_000).circleCrop().into(it)
+                Glide.with(context).load(Uri.parse("${BASE_URL}avatars/${post.authorAvatar}"))
+                    .placeholder(animPlaceholder).timeout(10_000).circleCrop().into(it)
             }
         }
         binding.attachment.also {
-            if(post.attachment!=null){
+            if (post.attachment != null) {
                 it.visibility = View.VISIBLE
-                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}")).timeout(10_000).into(binding.attachment)
-            }
-            else{
-                it.visibility=View.GONE
+                Glide.with(context).load(Uri.parse("${BASE_URL}images/${post.attachment.url}"))
+                    .timeout(10_000).into(it)
+            } else {
+                it.visibility = View.GONE
             }
         }
         binding.menu.setOnClickListener {
@@ -59,10 +54,32 @@ class PostHolder(
                             listener.onRemoveClick(post.id)
                             true
                         }
+
                         R.id.update -> {
                             listener.onUpdateCLick(post)
                             true
                         }
+
+                        else -> false
+                    }
+                }
+            }
+        }
+        binding.menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options)
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.remove -> {
+                            listener.onRemoveClick(post.id)
+                            true
+                        }
+
+                        R.id.update -> {
+                            listener.onUpdateCLick(post)
+                            true
+                        }
+
                         else -> false
                     }
                 }

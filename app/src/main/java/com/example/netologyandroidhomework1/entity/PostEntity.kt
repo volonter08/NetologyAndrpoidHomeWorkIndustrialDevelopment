@@ -3,6 +3,7 @@ package com.example.netologyandroidhomework1.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.netologyandroidhomework1.dto.Post
+import com.example.netologyandroidhomework1.model.Attachment
 
 @Entity
 data class PostEntity(

@@ -14,6 +14,8 @@ import com.example.netologyandroidhomework1.dto.Post
 import com.example.netologyandroidhomework1.model.PostCallback
 import com.example.netologyandroidhomework1.model.PostRepository
 import kotlinx.coroutines.launch
+import com.example.netologyandroidhomework1.utills.SingleLiveEvent
+import com.google.gson.JsonSyntaxException
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val postCallback = object : PostCallback {

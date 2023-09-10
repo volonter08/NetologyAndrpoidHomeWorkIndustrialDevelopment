@@ -4,8 +4,8 @@ import com.example.netologyandroidhomework1.model.Attachment
 
 data class Post(
     val id: Long = 0,
-    val author: String = "Нетология. Университет интернет-профессий будущего",
-    val authorAvatar:String? = null,
+    val author: String = "",
+    val authorAvatar: String?= null,
     val content: String,
     val published: String = "",
     val likedByMe: Boolean = false,

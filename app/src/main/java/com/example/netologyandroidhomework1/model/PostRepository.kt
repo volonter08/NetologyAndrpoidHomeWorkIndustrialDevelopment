@@ -52,7 +52,6 @@ class PostRepository(private val dao: PostDao) :
 
     fun share(id: Int) {
     }
-
     suspend fun remove(id: Long) {
         dao.removeById(id)
         val response = retrofitService.removeById(id)

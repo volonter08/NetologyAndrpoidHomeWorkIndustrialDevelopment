@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.netologyandroidhomework1"
-        minSdkVersion 22
+        minSdkVersion 28
         targetSdkVersion 34
         versionCode 1
         versionName "1.0"
